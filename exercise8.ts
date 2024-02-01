@@ -52,7 +52,8 @@ printRandomMeteorites(meteoritesDataset);
 console.log(`Exercise 13`);
 function printRandomNumberOfMeteorites(data: Meteorite[], numberOfMeteorites: number){
     for (let i = 1; i < numberOfMeteorites; i++) {
+        console.log(`----------------`);
         printRandomMeteorites(data);
     }
 }
-printRandomNumberOfMeteorites(meteoritesDataset,3);
+printRandomNumberOfMeteorites(meteoritesDataset,4);
