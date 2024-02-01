@@ -49,3 +49,9 @@ function printRandomMeteorites(data: Meteorite[]){
     console.log(`Name: ${data[randomIndex].name} \n Mass: ${data[randomIndex].mass} \n Year: ${data[randomIndex].year.slice(0,4)}`);
 }
 printRandomMeteorites(meteoritesDataset);
+function printRandomNumberOfMeteorites(data: Meteorite[], numberOfMeteorites: number){
+    for (let i = 1; i < numberOfMeteorites; i++) {
+        printRandomMeteorites(data);
+    }
+}
+printRandomNumberOfMeteorites(meteoritesDataset,3);
