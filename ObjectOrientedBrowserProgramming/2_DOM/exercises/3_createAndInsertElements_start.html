@@ -19,10 +19,10 @@
     </style>
   </head>
   <body>
-    <button>Add product With Create Element</button>
-    <!-- Here is the HTML structure for implementation target
+    <button onclick="task3ClickHandler()">Add product With Create Element</button>
+    Here is the HTML structure for implementation target
 
-    <div class="productList">
+    <!-- <div class="productList">
       <div class="productCard">
         <img src="images/eos-90d.jpg">
         <div class="productInfo">
@@ -35,10 +35,31 @@
           </h2>
         </div>
       </div>
-    </div>
-    -->
+    </div> -->
     <script>
       // Your code here
+      let button = document.querySelector("button");
+        function task3ClickHandler(){
+          let productList = document.createElement("div");
+          productList.classList.add("productList");
+          let productCard = document.createElement("div");
+          productCard.classList.add("productCard");
+          let img = document.createElement("img");
+          img.src = "images/eos-90d.jpg";
+          let productInfo = document.createElement("div");
+          productInfo.classList.add("productInfo");
+          let h1 = document.createElement("h1");
+          h1.innerHTML = "EOS 90D";
+          let h2 = document.createElement("h2");
+          h2.innerHTML = "32.5 megapixels, 10 frames per second";
+          h2.innerHTML = "4K video, 1300 frames per battery, ISO 25600";
+          productInfo.appendChild(h1);
+          productInfo.appendChild(h2);
+          productCard.appendChild(img);
+          productCard.appendChild(productInfo);
+          productList.appendChild(productCard);
+          document.body.appendChild(productList);
+        }
     </script>
   </body>
 </html>

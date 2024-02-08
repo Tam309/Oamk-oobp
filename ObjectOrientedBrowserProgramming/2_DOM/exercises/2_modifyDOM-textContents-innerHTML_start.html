@@ -27,12 +27,35 @@
       Write code, which inserts into a single div containing an image (https://www.w3.org/html/logo/img/html5-display.png) and text "AN HTML5 LOGO". That content should be laid out vertically stacked and centered on the page.
     </div>
       <button id="button">CLick me to change the word</button>
+      <button onclick="task2ClickHandler()">Click to execute task 2</button>
+      <button onclick="task3ClickHandler()">Click to execute task 3</button>
+      <div id="imgageTarget">
+      </div>
     <script>
       // Write your javascript code here.
       let button = document.getElementById("button");
       let word = document.getElementById("ExampleID");
       button.onclick = function(){
         word.innerHTML = "I have replaced everything";  
+      }
+      function task2ClickHandler(){
+        const divs = document.querySelectorAll("div");
+        for (let i = 0; i < divs.length; i++){
+          divs[i].innerHTML = "I have replaced everything";
+        }
+      }
+      let task3ClickHandler = function(){
+        let div = document.getElementById("imgageTarget");
+        let img = document.createElement("img");
+        img.src = "https://www.w3.org/html/logo/img/html5-display.png";
+        img.alt = "HTML5 logo";
+        let p = document.createElement("p");
+        p.innerHTML = "AN HTML5 LOGO";
+        div.appendChild(img);
+        div.appendChild(p);
+        div.style.display = "flex";
+        div.style.flexDirection = "column";
+        div.style.alignItems = "center";
       }
     </script>
   </body>
