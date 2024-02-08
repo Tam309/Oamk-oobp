@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body { margin: 0 }
+    </style>
+  </head>
+  <body>
+    <canvas id="target"></canvas>
+    <script>
+      const canvas = document.getElementById("target");
+      const context = canvas.getContext("2d");
+
+      canvas.width = 672;
+      canvas.height = 744;
+
+      class GameObject {
+        constructor(startX, startY, width, height, speedX, speedY) {
+          this.x = startX;
+          this.y = startY;
+          this.width = width;
+          this.height = height;
+          this.speedX = speedX;
+          this.speedY = speedY;
+        }
+
+        update(deltaTime) {
+          if((this.y >= canvas.height) || (this.y <= 0)) {
+            this.speedY = -this.speedY;
+          }
+          if(this.x >= canvas.width || (this.x <= 0)) {
+            this.speedX = -this.speedX;
+          }
+          this.y = this.y + this.speedY * deltaTime / 1000;
+          this.x = this.x + this.speedX * deltaTime / 1000;
+        }
+
+        draw() {
+          console.log('Draw not implemented');
+        }
+      }
+
+      class Ball extends GameObject {
+        constructor(startX, startY, width, height, speedX, speedY) {
+          super(startX, startY, width, height, speedX, speedY);
+          this.radius = Math.random() * 50;
+          this.color = {
+            red: Math.random() * 255,
+            green: Math.random() * 255,
+            blue: Math.random() * 255
+          };
+        }
+
+        draw() {
+          context.beginPath();
+          context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+          context.fillStyle = `rgb(${this.color.red}, ${this.color.green}, ${this.color.blue})`;
+          context.fill();
+        }
+      }
+
+      class Player extends GameObject {
+        constructor(startX, startY, width, height, speedX, speedY) {
+          super(startX, startY, width, height, speedX, speedY);
+          this.frameCounter = 0;
+          this.animationFrames = 2;
+          this.frameTimeCounter = 0;
+          this.frameRate = 6; // per second
+          this.movementDirection = "UP";
+        }
+
+        moveUp() {
+          // when key up arrow is pressed,
+          // then decrease y coordinate by the amout of movementSpeedY value
+          this.y = this.y - this.speedY;
+          this.movementDirection = "UP";
+        }
+
+        moveDown() {
+          this.y = this.y + this.speedY;
+          this.movementDirection = "DOWN";
+        }
+
+        moveLeft() {
+          this.x = this.x - this.speedX;
+          this.movementDirection = "LEFT";
+        }
+
+        moveRight() {
+          this.x = this.x + this.speedX;
+          this.movementDirection = "RIGHT";
+        }
+
+        update(deltaTime) {
+          this.frameTimeCounter += deltaTime;
+          if(this.frameTimeCounter > 1000 / this.frameRate) {
+            this.frameTimeCounter = 0;
+            // next frame
+            this.frameCounter++;
+
+            // check if we are at last frame, reset to the beginning
+            if(this.frameCounter >= this.animationFrames) {
+              this.frameCounter = 0;
+            }
+          }
+        }
+
+        draw() {
+          let animationFrameStartCoordX = 0;
+          switch(this.movementDirection) {
+            case "UP":
+              animationFrameStartCoordX = 3;
+              break;
+            case "DOWN":
+              animationFrameStartCoordX = 219;
+              break;
+            case "LEFT":
+              animationFrameStartCoordX = 111;
+              break;
+            case "RIGHT":
+              animationFrameStartCoordX = 327;
+              break;
+          }
+
+          context.drawImage(froggerSheet,
+                            animationFrameStartCoordX + this.frameCounter * 48 + 6*this.frameCounter, // sx
+                            3, // sy
+                            48, // swidth
+                            48, // sheight
+                            this.x, // coord in canvas X
+                            this.y, // coord in canvas Y
+                            this.width, // width on canvas
+                            this.height); // height on canvas
+        }
+      }
+
+      class Rectangle extends GameObject {
+        update() {
+          // collision check, does this collide with player
+          if(((this.x + this.width) > player.x) &&
+             (this.x < (player.x + player.width)) &&
+             ((this.y + this.height) > player.y) &&
+             (this.y < (player.y + player.height))) {
+            console.log('Hit');
+          }
+        }
+
+        draw() {
+          context.beginPath();
+          context.rect(this.x, this.y, this.width, this.height);
+          context.fillStyle = 'red';
+          context.fill();
+          context.lineWidth = 1;
+          context.strokeStyle = 'red';
+          context.stroke();
+        }
+      }
+
+      const player = new Player(288, 300, 48, 48, 50, 50);
+      const rectangle = new Rectangle(100, 100, 200, 50, 0, 0);
+      const gameObjectStorage = [];
+      gameObjectStorage.push(player);
+      gameObjectStorage.push(rectangle);
+
+      let lastTimeStamp = 0;
+      function updateScreen(timeStamp) {
+
+          let deltaTime = timeStamp - lastTimeStamp;
+          lastTimeStamp = timeStamp;
+
+          // clear the canvas
+          context.clearRect(0,0,canvas.width,canvas.height);
+
+          for(let i = 0; i < gameObjectStorage.length; i++) {
+            gameObjectStorage[i].update(deltaTime);
+            gameObjectStorage[i].draw();
+          }
+
+          window.requestAnimationFrame(updateScreen);
+      }
+
+      const froggerSheet = new Image();
+      froggerSheet.onload = () => {
+        window.requestAnimationFrame(updateScreen);
+      }
+      froggerSheet.src = 'froggerSheet.png';
+
+      window.addEventListener('keydown', function(event){
+        switch(event.keyCode) {
+          case 37:
+            player.moveLeft();
+            break;
+          case 38:
+            player.moveUp();
+            break;
+          case 39:
+            player.moveRight();
+            break;
+          case 40:
+            player.moveDown();
+            break;
+        }
+      });
+    </script>
+  </body>
+</html>
